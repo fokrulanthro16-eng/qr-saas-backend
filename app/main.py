@@ -17,13 +17,13 @@ FREE_DAILY_LIMIT = 20
 
 app = FastAPI(title="QR SaaS API", version="1.0.0")
 
-# ✅ CORS (dev + deploy)
-# Deploy করলে allow_origins এ তোমার frontend domain add করবে
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",
         "http://127.0.0.1:5173",
+        "https://intelliyash.site",
+        "https://www.intelliyash.site",
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -75,7 +75,6 @@ def login(payload: schemas.LoginRequest, db: Session = Depends(get_db)):
     if not user or not verify_password(payload.password, user.password_hash):
         raise HTTPException(status_code=401, detail="Invalid email or password")
 
-    # ✅ IMPORTANT FIX: create_access_token এখন user_id নেয় (dict না)
     token = create_access_token(user.id)
     return schemas.TokenResponse(access_token=token, token_type="bearer")
 
